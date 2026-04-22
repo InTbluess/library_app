@@ -11,10 +11,8 @@ void main() async {
   //open the box
   Hive.registerAdapter(BookAdapter());
   await Hive.openBox<Book>('books');
-  
 
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +23,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'HerShelf',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.deepPurple,
+        scaffoldBackgroundColor: Color(0xFF0F1115),
+
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+
+        textTheme: TextTheme(
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          bodyMedium: TextStyle(color: Colors.grey[400]),
+        ),
+      ),
       home: HomeScreen(),
     );
   }

@@ -51,7 +51,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
             const SizedBox(height: 20),
 
-            /// 📄 PICK PDF
+            /// PICK PDF
             ElevatedButton(
               onPressed: () async {
                 final path = await pickAndSavePdf();
@@ -62,7 +62,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
               child: const Text("Pick PDF"),
             ),
 
-            /// 🖼️ PICK IMAGE
+            /// PICK IMAGE
             ElevatedButton(
               onPressed: () async {
                 final path = await pickAndSaveImage();
@@ -75,7 +75,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
             const SizedBox(height: 20),
 
-            /// 💾 SAVE BOOK
+            /// SAVE BOOK
             ElevatedButton(
               onPressed: addBook,
               child: const Text("Save Book"),

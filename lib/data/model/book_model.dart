@@ -16,10 +16,14 @@ class Book extends HiveObject {
   @HiveField(3)
   String? coverImagePath;
 
+  @HiveField(4)
+  bool? isRead;
+
   Book({
     required this.title,
     required this.author,
     this.pdfPath,
     this.coverImagePath,
+    this.isRead = false,
   });
 }
