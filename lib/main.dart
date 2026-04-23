@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:library_app/data/model/book_model.dart';
 import 'package:library_app/features/library/screens/home_screen.dart';
+import 'package:library_app/core/theme/ui_theme.dart';
+import 'package:library_app/features/library/controllers/theme_controller.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   //initialize hive
@@ -12,7 +15,12 @@ void main() async {
   Hive.registerAdapter(BookAdapter());
   await Hive.openBox<Book>('books');
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeController(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,30 +28,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Provider.of<ThemeController>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'HerShelf',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.deepPurple,
-        scaffoldBackgroundColor: Color(0xFF0F1115),
-
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          titleTextStyle: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-
-        textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(color: Colors.grey[400]),
-        ),
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeController.currentTheme,
       home: HomeScreen(),
     );
   }

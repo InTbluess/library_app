@@ -1,69 +1,55 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
+import 'package:library_app/features/library/controllers/theme_controller.dart';
+import 'package:library_app/features/library/widgets/change_confirmation_dialogue.dart';
 import 'package:provider/provider.dart';
-
 import '../../../data/model/book_model.dart';
 import '../../../core/utils/file_utils.dart';
-import '../../library/controllers/theme_controller.dart';
 
-class AddBookScreen extends StatefulWidget {
-  const AddBookScreen({super.key});
+class EditBookScreen extends StatefulWidget {
+  final Book book;
+  final int index;
+
+  const EditBookScreen({required this.book, required this.index});
 
   @override
-  State<AddBookScreen> createState() => _AddBookScreenState();
+  State<EditBookScreen> createState() => _EditBookScreenState();
 }
 
-class _AddBookScreenState extends State<AddBookScreen> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController authorController = TextEditingController();
+class _EditBookScreenState extends State<EditBookScreen> {
+  late TextEditingController titleController;
+  late TextEditingController authorController;
 
   String? pdfPath;
   String? imagePath;
-
-  bool get canSave {
-    return titleController.text.trim().isNotEmpty &&
-        authorController.text.trim().isNotEmpty;
-  }
-
-  Future<void> addBook() async {
-    final box = Hive.box<Book>('books');
-
-    final book = Book(
-      title: titleController.text.trim(),
-      author: authorController.text.trim(),
-      pdfPath: pdfPath,
-      coverImagePath: imagePath,
-    );
-
-    await box.add(book);
-    Navigator.pop(context);
-  }
 
   @override
   void initState() {
     super.initState();
 
-    titleController.addListener(() => setState(() {}));
-    authorController.addListener(() => setState(() {}));
+    titleController = TextEditingController(text: widget.book.title);
+    authorController = TextEditingController(text: widget.book.author);
+
+    pdfPath = widget.book.pdfPath;
+    imagePath = widget.book.coverImagePath;
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Provider.of<ThemeController>(context).isDark;
-
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
-        centerTitle: true,
         title: Text(
-          "Add Book",
+          "Edit Book",
           style: GoogleFonts.pacifico(
             fontSize: 30,
-            color: isDark ? Colors.white : Colors.black,
+            color: Provider.of<ThemeController>(context).isDark
+                ? Colors.white
+                : Colors.black,
           ),
         ),
+        centerTitle: true,
       ),
 
       body: SingleChildScrollView(
@@ -76,8 +62,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // TEXT FIELDS
+            // 📝 TEXT FIELDS
             TextField(
               controller: titleController,
               decoration: InputDecoration(
@@ -102,7 +87,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
             const SizedBox(height: 20),
 
-            // IMAGE SECTION
+            // 🖼️ IMAGE SECTION
             Text(
               "Cover Image",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -113,6 +98,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 📸 IMAGE BOX
                 Container(
                   height: 210,
                   width: 140,
@@ -128,11 +114,12 @@ class _AddBookScreenState extends State<AddBookScreen> {
                             fit: BoxFit.cover,
                           ),
                         )
-                      : const Center(child: Text("No Image")),
+                      : Center(child: Text("No Image")),
                 ),
 
                 const SizedBox(width: 16),
 
+                // 🎛️ BUTTONS (RIGHT SIDE)
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,11 +131,9 @@ class _AddBookScreenState extends State<AddBookScreen> {
                             setState(() => imagePath = newImage);
                           }
                         },
-                        child: Text(
-                          imagePath != null
-                              ? "Change Image"
-                              : "Select Image",
-                        ),
+                        child: imagePath != null
+                            ? const Text("Change Image")
+                            : const Text("Select Image"),
                       ),
 
                       const SizedBox(height: 10),
@@ -168,7 +153,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
             const SizedBox(height: 20),
 
-            // PDF SECTION
+            // 📄 PDF SECTION
             Text(
               "PDF File",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -185,7 +170,9 @@ class _AddBookScreenState extends State<AddBookScreen> {
               ),
               child: Text(
                 pdfPath != null
-                    ? pdfPath!.split('/').last
+                    ? pdfPath!
+                          .split('/')
+                          .last // 🔥 filename only
                     : "No PDF selected",
               ),
             ),
@@ -202,9 +189,9 @@ class _AddBookScreenState extends State<AddBookScreen> {
                         setState(() => pdfPath = newPdf);
                       }
                     },
-                    child: Text(
-                      pdfPath != null ? "Change PDF" : "Select PDF",
-                    ),
+                    child: pdfPath != null
+                        ? const Text("Change PDF")
+                        : const Text("Select PDF"),
                   ),
                 ),
 
@@ -224,24 +211,33 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
             const SizedBox(height: 30),
 
-            // SAVE BUTTON
+            // 💾 SAVE BUTTON
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: canSave ? addBook : null,
-                child: const Text("Add Book"),
+                onPressed: () async {
+                  final confirm = await confirmSaveChanges(
+                    context,
+                    titleController.text,
+                    authorController.text,
+                    widget.book.isRead,
+                  );
+
+                  if (confirm) {
+                    widget.book.title = titleController.text;
+                    widget.book.author = authorController.text;
+                    widget.book.pdfPath = pdfPath;
+                    widget.book.coverImagePath = imagePath;
+
+                    await widget.book.save();
+
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text("Save Changes"),
               ),
             ),
-
-            if (!canSave)
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Text(
-                  "Title and Author are required",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
           ],
         ),
       ),

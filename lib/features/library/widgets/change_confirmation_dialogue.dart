@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<bool> confirmDelete(
+Future<bool> confirmSaveChanges(
   BuildContext context,
   String title,
   String author,
@@ -19,21 +19,21 @@ Future<bool> confirmDelete(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // ⚠️ ICON
+                  // ✅ ICON
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
+                      color: const Color.fromARGB(83, 76, 175, 79),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.delete, color: Colors.red, size: 28),
+                    child: Icon(Icons.save, color: Colors.green, size: 28),
                   ),
 
                   const SizedBox(height: 16),
 
                   // 🧾 TITLE
                   Text(
-                    "Delete Book?",
+                    "Save Changes?",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -43,7 +43,7 @@ Future<bool> confirmDelete(
                   const SizedBox(height: 8),
 
                   Text(
-                    "This action cannot be undone.",
+                    "Do you want to save these changes?",
                     style: TextStyle(color: Colors.grey),
                   ),
 
@@ -113,11 +113,11 @@ Future<bool> confirmDelete(
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Colors.green,
                           ),
                           onPressed: () =>
                               Navigator.pop(dialogContext, true),
-                          child: const Text("Delete"),
+                          child: const Text("Save"),
                         ),
                       ),
                     ],

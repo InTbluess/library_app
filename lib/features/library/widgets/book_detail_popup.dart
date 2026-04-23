@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:library_app/features/library/screens/edit_book_scrreen.dart';
+import 'package:library_app/features/library/screens/edit_book_screen.dart';
 import 'package:library_app/features/library/widgets/delete_confirmation_tile.dart';
 import 'package:open_filex/open_filex.dart';
 import '../../../data/model/book_model.dart';
@@ -56,14 +56,14 @@ void showBookDialog(BuildContext context, Book book, int index) {
               // Title
               Text(
                 book.title,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
 
               // Author
               Text(
                 book.author,
-                style: TextStyle(fontSize: 20, color: Colors.grey),
+                style: TextStyle(fontSize: 20, color: const Color.fromARGB(255, 114, 114, 114)),
                 textAlign: TextAlign.center,
               ),
 
@@ -99,7 +99,10 @@ void showBookDialog(BuildContext context, Book book, int index) {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
-                              child: Icon(Icons.error_outline, color: Colors.redAccent),
+                              child: Icon(
+                                Icons.error_outline,
+                                color: Colors.redAccent,
+                              ),
                             ),
                             const Text("No PDF available"),
                           ],
@@ -136,9 +139,13 @@ void showBookDialog(BuildContext context, Book book, int index) {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: ElevatedButton(
-                        onPressed: () => {  
-                          Navigator.pop(context), // close dialog
-                          confirmDelete(context),
+                        onPressed: () async {
+                          Navigator.pop(context); // close dialog 
+                          final confirm = await confirmDelete(context, book.title, book.author, book.isRead);
+
+                          if (confirm) {
+                            await book.delete();
+                          }
                         },
                         child: Icon(
                           Icons.delete_outlined,

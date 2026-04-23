@@ -17,26 +17,28 @@ class BookTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6,
-                offset: Offset(2, 2),
-              ),
-            ],
+            // border: Border.all(color: Colors.grey.shade300),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black12,
+            //     blurRadius: 6,
+            //     offset: Offset(2, 2),
+            //   ),
+            // ],
           ),
           child: Stack(
             children: [
-              // 👇 Main content (your existing Row)
+              // Main content
               Row(
                 children: [
                   // Cover
                   Container(
-                    width: 80,
-                    height: 110,
+                    width: 140,
+                    height: 210,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -58,13 +60,13 @@ class BookTile extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.book, size: 18),
+                            Icon(Icons.book, size: 28),
                             SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 book.title,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 30,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -74,10 +76,14 @@ class BookTile extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.person, size: 15),
-                            SizedBox(width: 6),
-                            Text(book.author),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 2.0),
+                              child: Icon(Icons.person, size: 22),
+                            ),
+                            SizedBox(width: 10),
+                            Text(book.author, style: TextStyle(fontSize: 22)),
                           ],
                         ),
                       ],
@@ -86,14 +92,16 @@ class BookTile extends StatelessWidget {
                 ],
               ),
 
-              // 🔥 TOP RIGHT BUTTON
+              // TOP RIGHT BUTTON
               Positioned(
                 top: 0,
                 right: 0,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(90, 30),
-                    backgroundColor: isRead ? const Color.fromARGB(47, 76, 175, 79) : const Color.fromARGB(24, 244, 67, 54),
+                    backgroundColor: isRead
+                        ? const Color.fromARGB(255, 76, 175, 79)
+                        : const Color.fromARGB(255, 244, 67, 54),
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -103,7 +111,7 @@ class BookTile extends StatelessWidget {
                     book.isRead = !isRead;
                     await book.save();
                   },
-                  child: isRead ? Text("Read",) : Text("Not Read"),
+                  child: isRead ? Icon(Icons.check_circle, color: Colors.white) : Icon(Icons.close, color: Colors.white),
                 ),
               ),
             ],
