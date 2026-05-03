@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:library_app/features/library/controllers/filter_controller.dart';
 import 'package:library_app/features/library/controllers/searching_controller.dart';
@@ -23,8 +22,8 @@ class HomeScreen extends StatelessWidget {
           children: [
             // HEADER
             UserAccountsDrawerHeader(
-              accountName: Text("Indranil"), // you can replace later
-              accountEmail: Text("Welcome back 👋"),
+              accountName: Text("Hello Reader!"),
+              accountEmail: Text("Welcome back!"),
               currentAccountPicture: CircleAvatar(
                 child: Icon(Icons.person, size: 30),
               ),
@@ -37,6 +36,17 @@ class HomeScreen extends StatelessWidget {
               selected: controller.currentFilter == FilterType.all,
               onTap: () {
                 controller.setFilter(FilterType.all);
+                Navigator.pop(context);
+              },
+            ),
+
+            // FAVORITES
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text("Favorite Books"),
+              selected: controller.currentFilter == FilterType.favorites,
+              onTap: () {
+                controller.setFilter(FilterType.favorites);
                 Navigator.pop(context);
               },
             ),
@@ -67,6 +77,7 @@ class HomeScreen extends StatelessWidget {
       ),
 
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         toolbarHeight: 150,
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -99,8 +110,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 // SEARCH BAR
-                SizedBox(
-                  width: 240,
+                Expanded(
                   child: Container(
                     height: 40,
                     decoration: BoxDecoration(
@@ -142,7 +152,7 @@ class HomeScreen extends StatelessWidget {
                               listen: false,
                             ).setQuery("");
                           },
-                          child: const Icon(Icons.close, size: 18,),
+                          child: const Icon(Icons.close, size: 18),
                         ),
                       ],
                     ),
@@ -197,8 +207,14 @@ class HomeScreen extends StatelessWidget {
               );
             }
 
-            return ListView.builder(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            return GridView.builder(
+              padding: const EdgeInsets.all(12),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.65, //important for poster look
+              ),
               itemCount: books.length,
               itemBuilder: (context, index) {
                 final book = books[index];

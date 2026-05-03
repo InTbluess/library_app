@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../../data/model/book_model.dart';
 
-enum FilterType { all, read, unread }
+enum FilterType { all, read, unread, favorites}
 
 class FilterController extends ChangeNotifier {
   FilterType currentFilter = FilterType.all;
 
   final Box<Book> box = Hive.box<Book>('books');
+  
 
   void setFilter(FilterType filter) {
     currentFilter = filter;
@@ -20,6 +21,8 @@ class FilterController extends ChangeNotifier {
       return "You need to read some books!";
     case FilterType.unread:
       return "No unread books! Great job!";
+    case FilterType.favorites:
+      return "No favorite books yet!";
     case FilterType.all:
     default:
       return "No books yet. Tap the + button to add your first book!";
@@ -35,6 +38,9 @@ class FilterController extends ChangeNotifier {
 
       case FilterType.unread:
         return allBooks.where((b) => b.isRead == false).toList();
+
+      case FilterType.favorites:
+        return allBooks.where((b) => b.isFavorite == true).toList();
 
       case FilterType.all:
       default:

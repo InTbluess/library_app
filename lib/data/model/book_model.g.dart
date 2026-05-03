@@ -21,14 +21,15 @@ class BookAdapter extends TypeAdapter<Book> {
       author: fields[1] as String,
       pdfPath: fields[2] as String?,
       coverImagePath: fields[3] as String?,
-      isRead: fields[4] as bool?,
+      isRead: fields[4] as bool,
+      isFavorite: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Book obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class BookAdapter extends TypeAdapter<Book> {
       ..writeByte(3)
       ..write(obj.coverImagePath)
       ..writeByte(4)
-      ..write(obj.isRead);
+      ..write(obj.isRead)
+      ..writeByte(5)
+      ..write(obj.isFavorite);
   }
 
   @override

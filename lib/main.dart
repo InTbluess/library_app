@@ -15,7 +15,10 @@ void main() async {
 
   //open the box
   Hive.registerAdapter(BookAdapter());
+  
+  // await Hive.deleteBoxFromDisk('books');
   await Hive.openBox<Book>('books');
+  // await Hive.box<Book>('books').clear();
 
   runApp(
     MultiProvider(

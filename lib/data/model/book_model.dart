@@ -17,7 +17,12 @@ class Book extends HiveObject {
   String? coverImagePath;
 
   @HiveField(4)
-  bool? isRead;
+  bool isRead;
+
+  @HiveField(5)
+  bool isFavorite;
+
+
 
   Book({
     required this.title,
@@ -25,5 +30,6 @@ class Book extends HiveObject {
     this.pdfPath,
     this.coverImagePath,
     this.isRead = false,
+    this.isFavorite = false,
   });
 }
